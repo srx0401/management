@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=GB2312">
+	<title>easyui在datagrid的工具栏中加入搜索框</title>
+	<link rel="stylesheet" type="text/css" href="css/easyui.css">
+	<link rel="stylesheet" type="text/css" href="css/icon.css">
+	<link rel="stylesheet" type="text/css" href="css/demo.css">
+	<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+	<script>
+		//这里不做太多解释，具体的问题请去网上查询jquery easyui(很好，很强大的东东)
+		$(function(){
+			$('#tt').datagrid({
+				url: 'data/datagrid_data3.json',
+				title: 'MyTitle',
+				fitColumns: true,
+				nowrap:false,
+				rownumbers:true,
+				idField:'itemid',
+				showFooter:false,
+				sortName: 'itemid',
+				sortOrder: 'desc',
+				remoteSort: false,
+				pagination:true,
+				loadMsg:'数据载入中，请稍候......',
+				frozenColumns:[[
+	                {field:'ck',checkbox:true},
+					{field:'itemid',title:'Item ID',width:80,sortable:true}
+				]],
+				columns:[[
+					{field:'productid',title:'Product ID',width:120,sortable:true},
+					{field:'listprice',title:'List Price',width:80,align:'right',sortable:true},
+					{field:'unitcost',title:'Unit Cost',width:80,align:'right',sortable:true},
+					{field:'attr1',title:'Attribute',width:250,sortable:true},
+					{field:'status',title:'Status',width:60,align:'center',sortable:true}
+				]],				
+				toolbar:[{
+					id:'btnadd',
+					text:'添加',
+					style:'padding-bottom:0px',
+					iconCls:'icon-add',
+					handler:function(){
+						$('#btnsave').linkbutton('enable');
+						alert('添加')
+					}
+				},'-',{
+					id:'btnmodify',
+					text:'修改',
+					iconCls:'icon-modify',
+					handler:function(){
+						$('#btnmodify').linkbutton('enable');
+						alert('修改')
+					}
+				},'-',{
+					id:'btndelete',
+					text:'删除',
+					iconCls:'icon-cancel',
+					handler:function(){
+						$('#btndelete').linkbutton('enable');
+						alert('删除')
+					}
+				},'-']
+			});
+				
+				//循环列名，生成搜索的下拉列表
+				var fields =  $('#tt').datagrid('getColumnFields');
+				var muit="";
+				for(var i=0; i<fields.length; i++){
+				var opts = $('#tt').datagrid('getColumnOption', fields[i]);  
+				muit += "<div name='"+  fields[i] +"'>"+ opts.title +"</div>";
+				};
+				$('#mm').html($('#mm').html()+muit);
+				$('#sss').searchbox({  
+				menu:'#mm'
+				});
+			//获取生成的搜索框
+			var a=$("#testa");
+			//将生成好的搜索框放入工具栏
+			$(".datagrid-toolbar").append(a);	
+		});
+		function qq(value,name){
+			alert(value+":"+name)
+		}
+	</script>
+</head>
+<body style="width:100%;height:100%;margin:0;padding:0;">
+	<table id="tt"></table>
+	<div id="testa" style="display:inline;padding-top:3px;">
+	<!-- 这里的padding-top是让搜索栏向下点，也就是与"添加"等按钮对齐，但在HTML里面不好用，在jsp页面中已测试可用 -->
+		<input id="sss" class="easyui-searchbox" searcher="qq" prompt="请输入查询内容"  style="width:200px"></input>	
+		<div id="mm" style="width:100px">
+		</div>
+	</div>
+</body>
+</html>
